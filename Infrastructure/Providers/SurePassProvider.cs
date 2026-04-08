@@ -28,20 +28,22 @@ public class SurePassProvider : IProviderService
     {
         var url = $"{m.BaseUrl}{m.Endpoint}";
 
-        var req = new HttpRequestMessage(HttpMethod.Post, url);
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-        req.Headers.Add("Authorization", $"Bearer {m.ApiKey}");
-        req.Headers.Add("X-Request-Id", correlationId);
+        request.Headers.Add("Authorization", $"Bearer {m.ApiKey}");
+        request.Headers.Add("X-Request-Id", correlationId);
 
-        req.Content = new StringContent(
+        request.Content = new StringContent(
             JsonConvert.SerializeObject(new { pan_number = pan }),
             Encoding.UTF8,
             "application/json"
         );
 
-        var res = await _client.SendAsync(req);
+        var res = await _client.SendAsync(request);
         var json = await res.Content.ReadAsStringAsync();
 
+        Console.WriteLine("SurePass URL: " + url);
+        Console.WriteLine("SurePass Status: " + res.StatusCode);
         Console.WriteLine("SurePass Response: " + json);
 
         if (!res.IsSuccessStatusCode)

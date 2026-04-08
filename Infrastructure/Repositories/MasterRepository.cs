@@ -16,7 +16,7 @@ public class MasterRepository
 
     public async Task<PanMaster?> GetByProviderName(string providerName)
     {
-        var sql = "SELECT * FROM pan_master WHERE provider_name=@providerName LIMIT 1";
+        var sql = "SELECT * FROM provider_master WHERE provider_name=@providerName LIMIT 1";
 
         using var db = _context.CreateConnection();
 
