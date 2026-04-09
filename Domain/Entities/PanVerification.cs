@@ -3,8 +3,10 @@
 public class PanVerification
 {
     public Guid Id { get; set; }
+
     public string CorrelationId { get; set; }
-    public Guid MasterId { get; set; }   // ✅ Guid
+
+    public long MasterId { get; set; }   // ✅ FIXED
 
     public string PanHash { get; set; }
     public string EncryptedPan { get; set; }
@@ -15,7 +17,7 @@ public class PanVerification
     public string EncryptedFullName { get; set; }
     public string PanCardType { get; set; }
 
-    public bool IsPanAadhaarLinked { get; set; }
+    public bool? IsPanAadhaarLinked { get; set; }
 
     public string CallerIp { get; set; }
 

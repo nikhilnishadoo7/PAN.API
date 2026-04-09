@@ -3,10 +3,8 @@ using PAN.API.Application.DTOs.Common;
 using PAN.API.Application.Interfaces;
 using PAN.API.Application.Mappers;
 using PAN.API.Domain.Entities;
-using System;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PAN.API.Infrastructure.Providers;
 
@@ -18,7 +16,7 @@ public class SurePassProvider : IProviderService
 
     public SurePassProvider(IHttpClientFactory factory)
     {
-        _client = factory.CreateClient();
+        _client = factory.CreateClient("SurepassClient"); // ✅ FIXED
     }
 
     public async Task<(PanCommonResponseDto response, string raw)> VerifyAsync(
@@ -26,11 +24,19 @@ public class SurePassProvider : IProviderService
         PanMaster m,
         string correlationId)
     {
-        var url = $"{m.BaseUrl}{m.Endpoint}";
+        var url = $"{m.BaseUrl.TrimEnd('/')}/{m.Endpoint.TrimStart('/')}";
+
+        Console.WriteLine("---- SurePass CALL ----");
+        Console.WriteLine("URL: " + url);
 
         var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-        request.Headers.Add("Authorization", $"Bearer {m.ApiKey}");
+        // ✅ Authorization (safe)
+        if (!string.IsNullOrEmpty(m.ApiKey))
+        {
+            request.Headers.Add("Authorization", $"Bearer {m.ApiKey}");
+        }
+
         request.Headers.Add("X-Request-Id", correlationId);
 
         request.Content = new StringContent(
@@ -42,12 +48,13 @@ public class SurePassProvider : IProviderService
         var res = await _client.SendAsync(request);
         var json = await res.Content.ReadAsStringAsync();
 
-        Console.WriteLine("SurePass URL: " + url);
         Console.WriteLine("SurePass Status: " + res.StatusCode);
         Console.WriteLine("SurePass Response: " + json);
 
         if (!res.IsSuccessStatusCode)
+        {
             throw new Exception($"SurePass failed: {json}");
+        }
 
         return (ProviderMapper.MapSurePass(json), json);
     }

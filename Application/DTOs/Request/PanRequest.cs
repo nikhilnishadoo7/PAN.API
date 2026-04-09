@@ -1,10 +1,11 @@
-﻿// Application/DTOs/Request/PanRequest.cs
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace PAN.API.Application.DTOs.Request;
 
 public class PanRequest
 {
-    [JsonPropertyName("pan")]
+    [JsonPropertyName("pan_number")]
+    [Required]
     public string Pan { get; set; }
 }

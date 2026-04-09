@@ -9,11 +9,18 @@ public static class EntityMapper
         return new PanMaster
         {
             Id = db.id,
+
             ProviderName = db.provider_name,
-            BaseUrl = db.base_url,
-            Endpoint = db.endpoint,
-            ApiKey = db.api_key,
-            Priority = db.priority
+
+            BaseUrl = db.provider_baseurl,     // ✅ FIXED
+
+            Endpoint = db.provider_endpoint,   // ✅ FIXED
+
+            ApiKey = db.encrypted_api_key,     // ✅ FIXED
+
+            Priority = db.priority,
+
+            IsActive = db.is_active
         };
     }
 }

@@ -2,7 +2,7 @@
 
 public class PanMaster
 {
-    public Guid Id { get; set; }   // ✅ MUST be Guid
+    public long Id { get; set; }   // ✅ FIXED
 
     public string ProviderName { get; set; }
     public string BaseUrl { get; set; }
@@ -10,5 +10,5 @@ public class PanMaster
     public string ApiKey { get; set; }
 
     public int Priority { get; set; }
-    public bool IsActive { get; set; }   // matches DB
+    public bool IsActive { get; set; }
 }

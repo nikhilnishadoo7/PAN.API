@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using PAN.API.Domain.Entities;
 using PAN.API.Infrastructure.Dapper;
-using System.Threading.Tasks;
 
 namespace PAN.API.Infrastructure.Repositories;
 
@@ -16,7 +15,18 @@ public class MasterRepository
 
     public async Task<PanMaster?> GetByProviderName(string providerName)
     {
-        var sql = "SELECT * FROM provider_master WHERE provider_name=@providerName LIMIT 1";
+        var sql = @"
+        SELECT 
+            id,
+            provider_name AS ProviderName,
+            provider_baseurl AS BaseUrl,
+            provider_endpoint AS Endpoint,
+            encrypted_api_key AS ApiKey,
+            priority AS Priority,
+            is_active AS IsActive
+        FROM panmaster
+       WHERE LOWER(provider_name) = LOWER(@providerName)
+        LIMIT 1";
 
         using var db = _context.CreateConnection();
 
