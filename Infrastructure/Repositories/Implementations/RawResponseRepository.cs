@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using PAN.API.Application.Interfaces;
 using PAN.API.Domain.Entities;
 using PAN.API.Infrastructure.Dapper;
+using PAN.API.Infrastructure.Repositories.Interfaces;
 
-namespace PAN.API.Infrastructure.Repositories;
+namespace PAN.API.Infrastructure.Repositories.Implementations;
 
 public class RawResponseRepository : IRawResponseRepository
 {

@@ -8,6 +8,8 @@ public class PanVerification
 
     public long MasterId { get; set; }   // ✅ FIXED
 
+    public string? ProviderRequestId { get; set; }
+
     public string PanHash { get; set; }
     public string EncryptedPan { get; set; }
 

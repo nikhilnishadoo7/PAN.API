@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PAN.API.Application.DTOs.Request;
-using PAN.API.Application.Interfaces;
+using PAN.API.Application.Services.Interfaces;
+using PAN.API.Infrastructure.Logging;
 
 namespace PAN.API.Controllers;
 
@@ -18,20 +19,24 @@ public class PanController : ControllerBase
     [HttpPost("verify")]
     public async Task<IActionResult> Verify([FromBody] PanRequest? request)
     {
-        Console.WriteLine("Controller Hit");
+        SafeLogger.App("Controller Hit");
 
         if (request == null)
             return BadRequest("Request body missing");
 
-        Console.WriteLine("PAN: " + request.Pan);
+        SafeLogger.App($"Incoming PAN: {request.Pan}");
 
         if (string.IsNullOrWhiteSpace(request.Pan))
             return BadRequest("PAN is empty");
 
-        var correlationId = Guid.NewGuid().ToString();
+        // ✅ FIXED
+        var correlationId = HttpContext.Items["CorrelationId"]?.ToString();
+
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "UNKNOWN";
 
         var result = await _service.VerifyAsync(request, correlationId, ip);
+
+        SafeLogger.App("Returning response");
 
         return Ok(result);
     }

@@ -1,4 +1,5 @@
-﻿// Middleware/CorrelationIdMiddleware.cs
+﻿using Serilog.Context;
+
 namespace PAN.API.Middleware;
 
 public class CorrelationIdMiddleware
@@ -12,8 +13,19 @@ public class CorrelationIdMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var id = context.Request.Headers["X-Request-Id"].FirstOrDefault() ?? Guid.NewGuid().ToString();
+        var id = context.Request.Headers["X-Request-Id"].FirstOrDefault()
+                 ?? Guid.NewGuid().ToString();
+
+        // ✅ Store in HttpContext
         context.Items["CorrelationId"] = id;
-        await _next(context);
+
+        // ✅ Send back to client
+        context.Response.Headers["X-Request-Id"] = id;
+
+        // ❗ THIS LINE WAS MISSING (ROOT CAUSE)
+        using (LogContext.PushProperty("correlation_id", id))
+        {
+            await _next(context);
+        }
     }
 }

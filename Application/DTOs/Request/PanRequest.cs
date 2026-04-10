@@ -6,6 +6,11 @@ namespace PAN.API.Application.DTOs.Request;
 public class PanRequest
 {
     [JsonPropertyName("pan_number")]
-    [Required]
-    public string Pan { get; set; }
+    public string? PanNumber { get; set; }
+
+    [JsonPropertyName("idNumber")]
+    public string? IdNumber { get; set; }
+
+    [JsonIgnore]
+    public string Pan => PanNumber ?? IdNumber!;
 }

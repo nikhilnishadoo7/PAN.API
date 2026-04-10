@@ -1,4 +1,4 @@
-﻿namespace PAN.API.Application.Interfaces;
+﻿namespace PAN.API.Infrastructure.Providers.Interfaces;
 
 using PAN.API.Application.DTOs.Common;
 using PAN.API.Domain.Entities;

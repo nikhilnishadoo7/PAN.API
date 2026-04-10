@@ -1,25 +1,27 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using PAN.API.Application.DTOs.Common;
 using PAN.API.Application.DTOs.Request;
-using PAN.API.Application.Interfaces;
+using PAN.API.Application.Services.Interfaces;
+using PAN.API.Application.Utilities;
 using PAN.API.Domain.Entities;
-using PAN.API.Application.DTOs.Common;
-using PAN.API.Infrastructure.Repositories;
+using PAN.API.Infrastructure.Repositories.Implementations;
+using PAN.API.Infrastructure.Repositories.Interfaces;
+using System;
+using System.Threading.Tasks;
 
-namespace PAN.API.Application.Services;
+namespace PAN.API.Application.Services.Implementations;
 
 public class PanVerificationService : IPanVerificationService
 {
     private readonly IPanRepository _panRepository;
     private readonly IRawResponseRepository _rawRepository;
     private readonly IFallbackService _fallbackService;
-    private readonly MasterRepository _masterRepository;
+    private readonly IMasterRepository _masterRepository;
 
     public PanVerificationService(
         IPanRepository panRepository,
         IRawResponseRepository rawRepository,
         IFallbackService fallbackService,
-        MasterRepository masterRepository)
+        IMasterRepository masterRepository)
     {
         _panRepository = panRepository;
         _rawRepository = rawRepository;
@@ -31,29 +33,34 @@ public class PanVerificationService : IPanVerificationService
     {
         var pan = request.Pan;
 
-        Console.WriteLine("STEP 1 - Incoming PAN: " + pan);
+        SafeLogger.App($"STEP 1 - Incoming PAN: {pan}");
 
         if (string.IsNullOrWhiteSpace(pan))
             throw new Exception("PAN is NULL or EMPTY");
 
-        var hash = pan.GetHashCode().ToString();
+        var hash = HashHelper.ComputeSha256(pan);
+
+        SafeLogger.App("STEP 2 - Checking existing PAN");
 
         var existing = await _panRepository.GetByHash(hash);
         if (existing != null)
+        {
+            SafeLogger.App("STEP 2.1 - Cache hit");
             return existing;
+        }
+
+        SafeLogger.App("STEP 3 - Calling provider");
 
         var (success, response) = await _fallbackService.ExecuteAsync(pan);
 
         if (!success || response == null)
             throw new Exception("PAN verification failed");
 
-        // 🔥 SAFE CAST
         if (response is not PanCommonResponseDto res)
-            throw new Exception("Mapping failed: response is not PanCommonResponseDto");
+            throw new Exception("Mapping failed");
 
-        Console.WriteLine("STEP 2 - Mapped PAN: " + res.Pan);
+        SafeLogger.App($"STEP 4 - Provider response: {res.Pan}");
 
-        // 🔥 Get MasterId dynamically
         var master = await _masterRepository.GetByProviderName("Surepass");
 
         if (master == null)
@@ -63,6 +70,7 @@ public class PanVerificationService : IPanVerificationService
         {
             Id = Guid.NewGuid(),
             MasterId = master.Id,
+            ProviderRequestId = res?.client_id,
             PanHash = hash,
             EncryptedPan = res?.Pan ?? pan,
             PanStatus = res.PanStatus,
@@ -75,9 +83,11 @@ public class PanVerificationService : IPanVerificationService
             CreatedAt = DateTime.UtcNow
         };
 
-        Console.WriteLine("STEP 3 - ENTITY PAN: " + entity.EncryptedPan);
+        SafeLogger.App("STEP 5 - Saving verification");
 
         await _panRepository.Insert(entity);
+
+        SafeLogger.App("STEP 6 - Saving raw response");
 
         await _rawRepository.InsertAsync(new PanResponseJson
         {
@@ -86,6 +96,8 @@ public class PanVerificationService : IPanVerificationService
             EncryptedRawResponseJson = response.ToString(),
             CreatedAt = DateTime.UtcNow
         });
+
+        SafeLogger.App("STEP 7 - Completed");
 
         return response;
     }

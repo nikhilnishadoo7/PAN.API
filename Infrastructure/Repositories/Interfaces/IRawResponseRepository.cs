@@ -1,7 +1,7 @@
 ﻿using PAN.API.Domain.Entities;
 using System.Threading.Tasks;
 
-namespace PAN.API.Application.Interfaces;
+namespace PAN.API.Infrastructure.Repositories.Interfaces;
 
 public interface IRawResponseRepository
 {

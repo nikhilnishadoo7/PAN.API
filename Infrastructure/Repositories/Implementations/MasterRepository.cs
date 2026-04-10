@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using PAN.API.Domain.Entities;
 using PAN.API.Infrastructure.Dapper;
+using PAN.API.Infrastructure.Repositories.Interfaces;
 
-namespace PAN.API.Infrastructure.Repositories;
+namespace PAN.API.Infrastructure.Repositories.Implementations;
 
-public class MasterRepository
+public class MasterRepository : IMasterRepository
 {
     private readonly DapperContext _context;
 

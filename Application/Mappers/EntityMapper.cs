@@ -12,11 +12,11 @@ public static class EntityMapper
 
             ProviderName = db.provider_name,
 
-            BaseUrl = db.provider_baseurl,     // ✅ FIXED
+            BaseUrl = db.provider_baseurl,    
 
-            Endpoint = db.provider_endpoint,   // ✅ FIXED
+            Endpoint = db.provider_endpoint,   
 
-            ApiKey = db.encrypted_api_key,     // ✅ FIXED
+            ApiKey = db.encrypted_api_key,     
 
             Priority = db.priority,
 

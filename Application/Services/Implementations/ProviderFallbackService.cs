@@ -1,16 +1,17 @@
-﻿using PAN.API.Application.Interfaces;
-using PAN.API.Infrastructure.Repositories;
+﻿using PAN.API.Application.Services.Interfaces;
+using PAN.API.Infrastructure.Providers.Interfaces;
+using PAN.API.Infrastructure.Repositories.Interfaces;
 
-namespace PAN.API.Application.Services;
+namespace PAN.API.Application.Services.Implementations;
 
 public class ProviderFallbackService : IFallbackService
 {
     private readonly IEnumerable<IProviderService> _providers;
-    private readonly MasterRepository _masterRepository;
+    private readonly IMasterRepository _masterRepository;
 
     public ProviderFallbackService(
         IEnumerable<IProviderService> providers,
-        MasterRepository masterRepository)
+        IMasterRepository masterRepository)
     {
         _providers = providers;
         _masterRepository = masterRepository;

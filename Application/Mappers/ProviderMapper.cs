@@ -9,22 +9,16 @@ public static class ProviderMapper
     {
         var j = JObject.Parse(json);
 
-        var status = j["status"]?.ToString();
-
         return new PanCommonResponseDto
         {
-            IsSuccess = string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase),
-
+            IsSuccess = j["status"]?.ToString() == "SUCCESS",
             Pan = j["data"]?["pan_number"]?.ToString(),
             FullName = j["data"]?["full_name"]?.ToString(),
             PanStatus = j["data"]?["pan_status"]?.ToString(),
             Category = j["data"]?["category"]?.ToString(),
-
-            AadhaarLinked = string.Equals(
-                j["data"]?["aadhaar_seeding_status"]?.ToString(),
-                "Y",
-                StringComparison.OrdinalIgnoreCase
-            )
+            AadhaarLinked = j["data"]?["aadhaar_seeding_status"]?.ToString() == "Y",
+            //requestId = j["data"]?["requestId"]?.ToString(),
+            client_id = j["data"]?["client_id"]?.ToString(),
         };
     }
 
@@ -32,23 +26,15 @@ public static class ProviderMapper
     {
         var j = JObject.Parse(json);
 
-        var status = j["status"]?.ToString();
-
         return new PanCommonResponseDto
         {
-            IsSuccess = string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase),
-
+            IsSuccess = j["status"]?.ToString() == "SUCCESS",
             Pan = j["data"]?["idNumber"]?.ToString(),
             FullName = j["data"]?["fullName"]?.ToString(),
             PanStatus = j["data"]?["panStatus"]?.ToString(),
-
             Category = "person",
-
-            AadhaarLinked = string.Equals(
-                j["data"]?["aadhaarSeedingStatus"]?.ToString(),
-                "Successful",
-                StringComparison.OrdinalIgnoreCase
-            )
+            AadhaarLinked = j["data"]?["aadhaarSeedingStatus"]?.ToString() == "Successful",
+            client_id = j["requestId"].ToString()
         };
     }
 }

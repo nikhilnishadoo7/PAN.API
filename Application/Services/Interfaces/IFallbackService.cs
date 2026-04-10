@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace PAN.API.Application.Interfaces;
+namespace PAN.API.Application.Services.Interfaces;
 
 public interface IFallbackService
 {

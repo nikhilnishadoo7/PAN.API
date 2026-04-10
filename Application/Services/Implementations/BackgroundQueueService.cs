@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PAN.API.Application.Interfaces;
 using PAN.API.Domain.Entities;
+using PAN.API.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PAN.API.Application.Services;
+namespace PAN.API.Application.Services.Implementations;
 
 public class BackgroundQueueService : IHostedService
 {

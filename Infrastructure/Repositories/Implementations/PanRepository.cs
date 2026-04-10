@@ -1,9 +1,9 @@
 ﻿using Dapper;
-using PAN.API.Application.Interfaces;
 using PAN.API.Domain.Entities;
 using PAN.API.Infrastructure.Dapper;
+using PAN.API.Infrastructure.Repositories.Interfaces;
 
-namespace PAN.API.Infrastructure.Repositories;
+namespace PAN.API.Infrastructure.Repositories.Implementations;
 
 public class PanRepository : IPanRepository
 {
@@ -30,6 +30,7 @@ public class PanRepository : IPanRepository
             id,
             correlationid,
             masterid,
+            providerrequestid,
             panhash,
             encryptedpan,
             panstatus,
@@ -45,6 +46,7 @@ public class PanRepository : IPanRepository
             @Id,
             @CorrelationId,
             @MasterId,
+            @ProviderRequestId,
             @PanHash,
             @EncryptedPan,
             @PanStatus,
@@ -63,6 +65,7 @@ public class PanRepository : IPanRepository
             e.Id,
             e.CorrelationId,
             e.MasterId,
+            ProviderRequestId = e.ProviderRequestId,
             e.PanHash,
             e.EncryptedPan,
             e.PanStatus,

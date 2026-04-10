@@ -8,10 +8,10 @@ public class SprintVerifyResponseDto
 
     public class Data
     {
-        public string pan { get; set; }
-        public string fullName { get; set; }
-        public string panStatus { get; set; }
-        public bool aadhaarLinked { get; set; }
-        public string category { get; set; }
+        public string? pan { get; set; }
+        public string? fullName { get; set; }
+        public string? panStatus { get; set; }
+        public bool? aadhaarLinked { get; set; }
+        public string?   category { get; set; }
     }
 }

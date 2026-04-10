@@ -13,4 +13,7 @@ public class PanCommonResponseDto
     public bool AadhaarLinked { get; set; }
 
     public string? Category { get; set; }
+    //public bool? requestId { get; set; }
+
+    public string client_id { get; set; }
 }

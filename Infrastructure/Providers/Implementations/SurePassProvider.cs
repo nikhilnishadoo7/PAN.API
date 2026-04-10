@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using PAN.API.Application.DTOs.Common;
-using PAN.API.Application.Interfaces;
 using PAN.API.Application.Mappers;
 using PAN.API.Domain.Entities;
+using PAN.API.Infrastructure.Providers.Interfaces;
 using System.Net.Http;
 using System.Text;
 
-namespace PAN.API.Infrastructure.Providers;
+namespace PAN.API.Infrastructure.Providers.Implementations;
 
 public class SurePassProvider : IProviderService
 {
@@ -16,7 +16,7 @@ public class SurePassProvider : IProviderService
 
     public SurePassProvider(IHttpClientFactory factory)
     {
-        _client = factory.CreateClient("SurepassClient"); // ✅ FIXED
+        _client = factory.CreateClient("SurepassClient"); 
     }
 
     public async Task<(PanCommonResponseDto response, string raw)> VerifyAsync(
